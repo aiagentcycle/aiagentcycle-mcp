@@ -10,6 +10,9 @@
   "repository": "https://github.com/aiagentcycle/aiagentcycle-mcp",
   "icon": ".claude-plugin/icon.png",
   "privacyPolicyUrl": "https://aiagentcycle.com/nl/privacy/",
+  "supportUrl": "https://aiagentcycle.com/nl/contact/",
+  "documentationUrl": "https://aiagentcycle.com/nl/koppelingen/mcp/",
+  "termsOfServiceUrl": "https://aiagentcycle.com/nl/algemene-voorwaarden/",
   "license": "MIT",
   "keywords": [
     "aiagentcycle",
