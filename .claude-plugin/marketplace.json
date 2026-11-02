@@ -1,5 +1,6 @@
 {
   "name": "aiagentcycle-plugins",
+  "description": "Official AIAgentCycle plugins for source-linked company knowledge and automation context.",
   "owner": {
     "name": "AIAgentCycle",
     "email": "aiagentcycle@gmail.com"

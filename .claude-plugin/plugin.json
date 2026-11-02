@@ -8,6 +8,8 @@
   },
   "homepage": "https://aiagentcycle.com",
   "repository": "https://github.com/aiagentcycle/aiagentcycle-mcp",
+  "icon": ".claude-plugin/icon.png",
+  "privacyPolicyUrl": "https://aiagentcycle.com/nl/privacy/",
   "license": "MIT",
   "keywords": [
     "aiagentcycle",

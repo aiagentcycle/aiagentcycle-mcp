@@ -19,6 +19,12 @@ Add it as a remote MCP server in any client that supports Streamable HTTP, for e
 claude mcp add --transport http aiagentcycle https://mcp.aiagentcycle.com/mcp
 ```
 
+Or install the AIAgentCycle plugin from its repository marketplace:
+
+```text
+/plugin install aiagentcycle --marketplace aiagentcycle/aiagentcycle-mcp
+```
+
 ## Tools
 
 | Tool | What it returns |
