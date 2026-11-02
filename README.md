@@ -1,5 +1,7 @@
 # AIAgentCycle MCP server
 
+[![mcptry](https://mcptry.com/badge/com.aiagentcycle/aiagentcycle)](https://mcptry.com/servers/com.aiagentcycle/aiagentcycle)
+
 Read-only [Model Context Protocol](https://modelcontextprotocol.io) server for [aiagentcycle.com](https://aiagentcycle.com), a Dutch company that builds workflow automation, system integrations and AI agents on self-hosted n8n for small and medium-sized businesses.
 
 AI agents can use it to answer questions about the company with up-to-date, sourced facts: services and prices, the 190 systems it integrates, case studies, the knowledge base and contact details. Content is mirrored from the website every hour, in Dutch (primary) and English.
