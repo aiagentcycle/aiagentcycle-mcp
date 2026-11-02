@@ -51,11 +51,18 @@ All tools are annotated `readOnlyHint: true`, return structured JSON, and log on
 
 ```bash
 python -m venv .venv && .venv/bin/pip install --require-hashes -r requirements.txt
-AAC_MCP_CONTENT=./content python -m aac_mcp --host 127.0.0.1 --port 8321
+AAC_MCP_CONTENT=./content-published python -m aac_mcp --host 127.0.0.1 --port 8321
 .venv/bin/python -m pytest -q
 ```
 
-The server only binds to localhost. In production it runs behind nginx with rate limiting and an Origin check. See `deploy/` for the systemd units and the nginx config. `SCHEMA.md` describes the content files.
+For an isolated container build, including directory scanners such as Glama:
+
+```bash
+docker build -t aiagentcycle-mcp .
+docker run --rm -p 127.0.0.1:8321:8321 aiagentcycle-mcp
+```
+
+The regular command only binds to localhost. The container listens on its internal interface but the documented host mapping remains localhost-only. In production the server runs behind nginx with rate limiting and an Origin check. See `deploy/` for the systemd units and the nginx config. `SCHEMA.md` describes the content files.
 
 Built with [FastMCP](https://github.com/jlowin/fastmcp). Maintained by AIAgentCycle (Good Nature Vibe B.V., Oosterwolde, the Netherlands).
 
