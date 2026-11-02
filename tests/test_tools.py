@@ -158,6 +158,7 @@ def test_icons_in_card_registry_and_served(tmp_path: Path):
     from aac_mcp.server import create_app
 
     assert docs.registry_server_json()["icons"][0]["src"] == "https://mcp.aiagentcycle.com/icon-512.png"
+    assert docs.registry_server_json()["repository"] == {"url": "https://github.com/aiagentcycle/aiagentcycle-mcp", "source": "github", "id": "1443482395"}
     with TestClient(create_app()) as client:
         assert client.get("/mcp/server-card").json()["icons"] == docs.ICONS
         png = client.get("/icon-512.png")

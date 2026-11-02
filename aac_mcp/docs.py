@@ -21,6 +21,7 @@ DESCRIPTION = "Read-only facts on AIAgentCycle: n8n automation, AI agents, integ
 PROTOCOL_VERSIONS = ["2025-11-25", "2025-06-18", "2025-03-26"]
 assert len(DESCRIPTION) <= 100
 # Het logo van aiagentcycle.com, door deze server zelf geserveerd zodat een wijziging in WordPress het niet breekt.
+REPOSITORY = {"url": "https://github.com/aiagentcycle/aiagentcycle-mcp", "source": "github", "id": "1443482395"}
 ICONS = [
     {"src": f"{BASE}/icon-512.png", "mimeType": "image/png", "sizes": ["512x512"]},
     {"src": f"{BASE}/icon-150.png", "mimeType": "image/png", "sizes": ["150x150"]},
@@ -44,6 +45,7 @@ def server_card() -> dict:
         "version": __version__,
         "description": DESCRIPTION,
         "websiteUrl": SITE,
+        "repository": REPOSITORY,
         "icons": ICONS,
         "remotes": [{"type": "streamable-http", "url": MCP_URL, "supportedProtocolVersions": PROTOCOL_VERSIONS}],
     }
@@ -58,6 +60,7 @@ def registry_server_json() -> dict:
         "description": DESCRIPTION,
         "version": __version__,
         "websiteUrl": SITE,
+        "repository": REPOSITORY,
         "icons": ICONS,
         "remotes": [{"type": "streamable-http", "url": MCP_URL}],
     }
