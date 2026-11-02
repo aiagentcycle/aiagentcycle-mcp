@@ -1,0 +1,11 @@
+{
+  "name": "aiagentcycle-mcp",
+  "version": "0.3.2",
+  "description": "Read-only, source-linked AIAgentCycle knowledge in Dutch and English: services, indicative prices, integrations, cases and public contact routes.",
+  "mcpServers": {
+    "aiagentcycle": {
+      "httpUrl": "https://mcp.aiagentcycle.com/mcp",
+      "timeout": 30000
+    }
+  }
+}
