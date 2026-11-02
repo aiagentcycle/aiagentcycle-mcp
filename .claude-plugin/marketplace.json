@@ -1,0 +1,14 @@
+{
+  "name": "aiagentcycle-plugins",
+  "owner": {
+    "name": "AIAgentCycle",
+    "email": "aiagentcycle@gmail.com"
+  },
+  "plugins": [
+    {
+      "name": "aiagentcycle",
+      "source": "./",
+      "description": "Read-only, source-linked AIAgentCycle company knowledge in Dutch and English."
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "aiagentcycle": {
+      "type": "http",
+      "url": "https://mcp.aiagentcycle.com/mcp"
+    }
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "name": "aiagentcycle",
+  "description": "Read-only, source-linked AIAgentCycle company knowledge in Dutch and English.",
+  "version": "0.3.2",
+  "author": {
+    "name": "AIAgentCycle",
+    "email": "aiagentcycle@gmail.com"
+  },
+  "homepage": "https://aiagentcycle.com",
+  "repository": "https://github.com/aiagentcycle/aiagentcycle-mcp",
+  "license": "MIT",
+  "keywords": [
+    "aiagentcycle",
+    "knowledge",
+    "automation",
+    "n8n",
+    "mcp"
+  ]
+}
