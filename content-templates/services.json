@@ -1,0 +1,10 @@
+{
+  "services": [
+    {
+      "id": "placeholder",
+      "name": "placeholder",
+      "summary": "Eigenaarsdata nog niet goedgekeurd. Geen prijs, geen belofte.",
+      "public": true
+    }
+  ]
+}

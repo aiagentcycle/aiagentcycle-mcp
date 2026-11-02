@@ -1,0 +1,24 @@
+{
+  "lang": "en",
+  "name": "AIAgentCycle",
+  "status": "published",
+  "summary": "AIAgentCycle builds workflow automation, system integrations and AI agents for Dutch small and medium-sized businesses, and maintains them afterwards. The work runs on self-hosted n8n, so business data stays under the client's own control. Engagements start with a free 30-minute automation assessment; you always receive a short advice report.",
+  "legal_name": "Good Nature Vibe B.V. (trading as AIAgentCycle)",
+  "kvk": "95865101",
+  "location": "Houtwal 29B, 8431 EX Oosterwolde (Friesland), the Netherlands",
+  "founder": "Stefan de Graaf",
+  "key_facts": [
+    "Has built production automations and web shops since 2021, from server to integration.",
+    "More than 300 automations in production, in the founder's own companies and at clients, all self-hosted.",
+    "8 servers under management, with maintenance, monitoring and backups.",
+    "The founder builds smaller projects himself; for larger projects he directs freelancers and reviews what they deliver.",
+    "Background as an NLP trainer: also coaches the people who will work with the automation."
+  ],
+  "focus": ["n8n", "workflow automation", "system integrations", "AI agents", "self-hosted software", "maintenance", "GDPR", "EU AI Act", "SME digitalisation"],
+  "approach": "Automate one bounded process, prove the result, and only then improve. If a process is not worth automating, the client is told so.",
+  "website": "https://aiagentcycle.com/en/",
+  "linkedin": "https://www.linkedin.com/company/141264064/",
+  "sources": ["https://aiagentcycle.com/en/about/", "https://aiagentcycle.com/en/how-we-work/", "https://aiagentcycle.com/llms.txt"],
+  "verify": {"page_id": 379, "strings": ["300+", "95865101"]},
+  "updated": "2026-11-02"
+}

@@ -1,0 +1,24 @@
+{
+  "lang": "nl",
+  "name": "AIAgentCycle",
+  "status": "published",
+  "summary": "AIAgentCycle bouwt workflow-automatisering, koppelingen tussen systemen en AI-agents voor het Nederlandse mkb, en beheert die daarna. De techniek draait op self-hosted n8n, zodat bedrijfsdata in eigen beheer blijft. Een traject begint met een gratis automatiseringsscan van 30 minuten; je krijgt altijd een mini-adviesrapport.",
+  "legal_name": "Good Nature Vibe B.V. (handelsnaam AIAgentCycle)",
+  "kvk": "95865101",
+  "location": "Houtwal 29B, 8431 EX Oosterwolde (Friesland), Nederland",
+  "founder": "Stefan de Graaf",
+  "key_facts": [
+    "Bouwt sinds 2021 productie-automatiseringen en webshops, van server tot koppeling.",
+    "Meer dan 300 automatiseringen in productie, in eigen bedrijven en bij klanten, allemaal self-hosted.",
+    "8 servers in beheer, met onderhoud, monitoring en back-ups.",
+    "Kleinere opdrachten bouwt de oprichter zelf; voor grotere opdrachten stuurt hij freelancers aan en controleert hij de oplevering.",
+    "Achtergrond als NLP-trainer: begeleidt ook de mensen die met de automatisering gaan werken."
+  ],
+  "focus": ["n8n", "workflow-automatisering", "systeemkoppelingen", "AI-agents", "self-hosted software", "beheer en onderhoud", "AVG", "EU AI Act", "mkb-digitalisering"],
+  "approach": "Eén begrensd proces automatiseren, het resultaat bewijzen en pas daarna verbeteren. Is een proces het automatiseren niet waard, dan wordt dat gezegd.",
+  "website": "https://aiagentcycle.com/nl/",
+  "linkedin": "https://www.linkedin.com/company/141264064/",
+  "sources": ["https://aiagentcycle.com/nl/over/", "https://aiagentcycle.com/nl/werkwijze/", "https://aiagentcycle.com/llms.txt"],
+  "verify": {"page_id": 24, "strings": ["300+ automatiseringen", "8 servers in beheer", "KvK 95865101", "sinds 2021"]},
+  "updated": "2026-11-02"
+}

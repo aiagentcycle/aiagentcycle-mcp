@@ -1,0 +1,11 @@
+[Unit]
+Description=AAC MCP content-sync (elk uur)
+
+[Timer]
+# Elk uur: een wijziging op aiagentcycle.com staat binnen ruim een uur in de MCP, llms.txt en llms-full.txt.
+OnCalendar=hourly
+RandomizedDelaySec=300
+Persistent=true
+
+[Install]
+WantedBy=timers.target

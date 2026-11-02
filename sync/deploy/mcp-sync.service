@@ -1,0 +1,33 @@
+[Unit]
+Description=AAC MCP content sync
+# Alertroute (b): geen webhook. Een mislukte oneshot blijft zichtbaar in het journal.
+
+[Service]
+Type=oneshot
+User=mcp-sync
+Group=mcp
+Environment=PYTHONDONTWRITEBYTECODE=1
+Environment=HOME=/tmp
+Environment=AAC_MCP_CONTENT=/srv/mcp-content
+Environment=AAC_MCP_SYNC_LOG=/var/log/mcp/sync-report.txt
+ExecStart=/opt/aac-mcp/app/.venv/bin/python /opt/aac-mcp/app/sync/aac_mcp_sync.py
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+PrivateDevices=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectControlGroups=yes
+RestrictNamespaces=yes
+LockPersonality=yes
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+SystemCallArchitectures=native
+SystemCallFilter=@system-service
+CapabilityBoundingSet=
+# 0027: bestanden 0640, groep mcp (via Group=mcp), zodat user mcp de kennisbank kan lezen.
+UMask=0027
+ReadWritePaths=/srv/mcp-content /var/log/mcp
+CPUQuota=50%
+MemoryMax=512M
+TasksMax=64

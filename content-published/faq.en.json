@@ -1,0 +1,88 @@
+{
+  "lang": "en",
+  "status": "published",
+  "source": "https://aiagentcycle.com/en/pricing/",
+  "updated": "2026-11-01",
+  "items": [
+    {
+      "id": "faq-1",
+      "q": "Is €250 the total price including the server and AI usage?",
+      "a": "No. €250 is the monthly price for the defined Technical Maintenance package. External hosting, storage, licences and operational API usage are generally additional. Your quotation shows the total estimate and who pays each provider."
+    },
+    {
+      "id": "faq-2",
+      "q": "Why is not every incident repair included?",
+      "a": "An external API may change, a client may change something and a new process may have different requirements. This work cannot be estimated without limit in advance. We therefore separate fixed maintenance, triage, included work hours and approved additional work. We remedy failures attributable to us without extra labour charges."
+    },
+    {
+      "id": "faq-3",
+      "q": "Is error handling a paid extra, then?",
+      "a": "The agreed error handling is part of a careful build and handover of the process. This includes missing input, duplicate messages, bounded retries and a clear alert. Human analysis of a future incident is a different service. New exceptions or changing integrations may require additional work."
+    },
+    {
+      "id": "faq-4",
+      "q": "Do the two or five hours include fixed maintenance?",
+      "a": "No. Fixed maintenance is performed separately from those work hours. The included hours are for agreed small changes and additional work. The thirty minutes of triage are separate too. Our own errors do not use up these allowances."
+    },
+    {
+      "id": "faq-5",
+      "q": "Can I carry over unused hours?",
+      "a": "Normally not: included work hours and triage belong to the relevant subscription period. Schedule desired work in good time. If we fail to perform promised work on time for a reason attributable to us, the compensation arrangement in the maintenance terms applies."
+    },
+    {
+      "id": "faq-6",
+      "q": "Will my incident be resolved within eight hours?",
+      "a": "We cannot promise that. Within eight service hours, you receive a first substantive response with an assessment or a specific question and a next step. Resolution time depends, among other things, on the cause, access and any providers involved. Critical processes with strict recovery times need a different, separately arranged service."
+    },
+    {
+      "id": "faq-7",
+      "q": "Is my environment monitored at night too?",
+      "a": "The automated technical checks continue. A person does not watch continuously. Human follow-up takes place during service hours, except for separately accepted emergency work. Statutory notification duties still apply after becoming aware of a personal data breach."
+    },
+    {
+      "id": "faq-8",
+      "q": "What do the backups protect?",
+      "a": "The n8n data, configuration, keys and agreed files identified in your order, up to the package limit. Data held only in your CRM or mailbox is not automatically included. We also agree the storage location and restore tests. A daily backup does not guarantee that every item of the most recent data can be recovered."
+    },
+    {
+      "id": "faq-9",
+      "q": "Can you take over my existing n8n server?",
+      "a": "Yes, after a defined takeover assessment. We review access, versions, setup, backups and known risks. You then know whether the environment fits and what additional work is needed. A fixed assessment fee does not start unlimited remediation."
+    },
+    {
+      "id": "faq-10",
+      "q": "Must I purchase maintenance after the build?",
+      "a": "No. You may manage it yourself or choose another administrator. Make sure someone actually follows up on updates, backups, security and alerts. The agreed usage rights and rights relating to defects in our work remain in place."
+    },
+    {
+      "id": "faq-11",
+      "q": "Who owns the workflows and accounts?",
+      "a": "Accounts are normally in your name. For paid and delivered work, you receive the agreed enduring right of use, including export, modification and management by a successor. Generic modules and third-party software retain their own rights and licences. A right of use is therefore not the same as exclusive copyright."
+    },
+    {
+      "id": "faq-12",
+      "q": "Does all data stay in Europe?",
+      "a": "Not automatically. A European server may connect to an external AI or other cloud service. We document data flows, providers and required safeguards. If you have specific location requirements, we assess them before the assignment."
+    },
+    {
+      "id": "faq-13",
+      "q": "Does using AI benefit me?",
+      "a": "AI can help us perform work faster. For work charged on actual time, we charge the human time actually spent, including checks, rather than hypothetical time as if everything had been done manually. With a fixed price, you pay for the agreed performance. We do not guarantee a fixed percentage saving."
+    },
+    {
+      "id": "faq-14",
+      "q": "Can rates change?",
+      "a": "Yes, under the agreed indexation and change arrangements. A change is announced in advance and does not apply retroactively. For a change that disadvantages you, you can cancel effective on its start date. Annual maintenance indexation does not change an agreed fixed project price."
+    },
+    {
+      "id": "faq-15",
+      "q": "Is Extended Maintenance always the best choice?",
+      "a": "No. If you need few changes, Technical Maintenance or self-management may fit better. If you have demanding continuity requirements or complex processes, €950 is not automatically sufficient either. We assess what your process needs."
+    },
+    {
+      "id": "faq-16",
+      "q": "Which terms apply?",
+      "a": "The General Terms and Conditions B2B apply to assignments. The Additional Maintenance Terms also apply to maintenance. The quotation contains your specific scope, rates and deviations. If we process personal data as a processor, we also enter into a data processing agreement. You receive the applicable documents before you can accept, in a form you can retain."
+    }
+  ]
+}

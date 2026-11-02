@@ -1,0 +1,88 @@
+{
+  "lang": "nl",
+  "status": "published",
+  "source": "https://aiagentcycle.com/nl/prijzen/",
+  "updated": "2026-11-01",
+  "items": [
+    {
+      "id": "faq-1",
+      "q": "Is €250 de totale prijs inclusief server en AI-verbruik?",
+      "a": "Nee. €250 is de maandprijs voor het afgebakende Techbeheer. Externe hosting, opslag, licenties en operationeel API-verbruik komen daar doorgaans bij. Je offerte toont de totale raming en wie welke leverancier betaalt."
+    },
+    {
+      "id": "faq-2",
+      "q": "Waarom is niet alle storingsreparatie inbegrepen?",
+      "a": "Een externe API kan veranderen, een klant kan iets wijzigen en een nieuw proces kan andere eisen stellen. Zulke werkzaamheden zijn vooraf niet onbeperkt te ramen. Daarom scheiden we vast onderhoud, triage, werkruimte en goedgekeurd meerwerk. Onze eigen tekortkomingen herstellen we zonder extra arbeidskosten."
+    },
+    {
+      "id": "faq-3",
+      "q": "Is foutafhandeling dan een betaalde extra?",
+      "a": "De afgesproken foutafhandeling hoort bij een zorgvuldige bouw en oplevering van het proces. Denk aan ontbrekende invoer, dubbele berichten, begrensde retries en een duidelijke melding. Menselijke analyse van een toekomstige storing is een andere dienst. Nieuwe uitzonderingen of veranderende koppelingen kunnen aanvullend werk vragen."
+    },
+    {
+      "id": "faq-4",
+      "q": "Zijn de twee of vijf uur inclusief het vaste onderhoud?",
+      "a": "Nee. Het vaste onderhoud wordt uitgevoerd naast die werkruimte. De werkruimte is voor afgestemde kleine wijzigingen en aanvullend werk. De dertig minuten triage staan daar ook naast. Eigen fouten gaan niet van deze ruimte af."
+    },
+    {
+      "id": "faq-5",
+      "q": "Kan ik ongebruikte uren meenemen?",
+      "a": "Normaal niet: werkruimte en triage horen bij de betreffende abonnementsperiode. Plan gewenst werk daarom tijdig. Als wij toegezegd werk door een eigen oorzaak niet op tijd uitvoeren, geldt de compensatieregeling in de onderhoudsvoorwaarden."
+    },
+    {
+      "id": "faq-6",
+      "q": "Is mijn storing binnen acht uur opgelost?",
+      "a": "Dat kunnen we niet beloven. Binnen acht service-uren ontvang je een eerste inhoudelijke reactie met beoordeling of gerichte vraag en vervolgstap. De oplostijd hangt onder meer af van de oorzaak, toegang en eventuele leveranciers. Voor kritieke processen met harde hersteltijden is een andere, afzonderlijk ingerichte dienstverlening nodig."
+    },
+    {
+      "id": "faq-7",
+      "q": "Wordt mijn omgeving ook ’s nachts bewaakt?",
+      "a": "De automatische technische controles draaien door. Een medewerker kijkt niet continu mee. Menselijke opvolging vindt plaats binnen service-uren, behalve bij afzonderlijk geaccepteerde spoedinzet. Na kennisneming van een datalek blijven wettelijke meldverplichtingen gelden."
+    },
+    {
+      "id": "faq-8",
+      "q": "Wat beschermen de back-ups?",
+      "a": "De in je opdracht genoemde n8n-data, configuratie, sleutels en afgesproken bestanden, tot de pakketgrens. Data die alleen in je CRM of mailbox staat, zit daar niet automatisch bij. We spreken ook de opslaglocatie en hersteltests af. Een dagelijkse back-up is geen garantie dat ieder gegeven van het laatste moment terug te halen is."
+    },
+    {
+      "id": "faq-9",
+      "q": "Kan ik mijn bestaande n8n-server laten overnemen?",
+      "a": "Ja, na een afgebakend overnameonderzoek. We bekijken toegang, versies, inrichting, back-ups en bekende risico’s. Daarna weet je of de omgeving past en welk aanvullend werk nodig is. We starten geen onbeperkte sanering onder een vast intakebedrag."
+    },
+    {
+      "id": "faq-10",
+      "q": "Moet ik onderhoud afnemen na de bouw?",
+      "a": "Nee. Je mag zelf beheren of een andere beheerder kiezen. Zorg dan wel dat iemand updates, back-ups, beveiliging en meldingen daadwerkelijk opvolgt. De afgesproken gebruiksrechten en rechten bij gebreken in ons werk blijven bestaan."
+    },
+    {
+      "id": "faq-11",
+      "q": "Van wie zijn de workflows en accounts?",
+      "a": "Accounts staan standaard op jouw naam. Op betaald, opgeleverd werk krijg je het afgesproken blijvende gebruiksrecht, inclusief exporteren, aanpassen en beheer door een opvolger. Generieke modules en software van derden houden hun eigen rechten en licenties. Gebruik is dus niet hetzelfde als exclusief auteursrecht."
+    },
+    {
+      "id": "faq-12",
+      "q": "Blijven alle gegevens in Europa?",
+      "a": "Niet automatisch. Een Europese server kan gekoppeld zijn aan een externe AI- of andere clouddienst. We leggen de gegevensstromen, leveranciers en vereiste waarborgen vast. Als je specifieke locatie-eisen hebt, beoordelen we die vóór de opdracht."
+    },
+    {
+      "id": "faq-13",
+      "q": "Levert het gebruik van AI mij voordeel op?",
+      "a": "AI kan ons helpen werk sneller uit te voeren. We rekenen bij nacalculatie de werkelijk bestede menselijke tijd, inclusief controle, en geen denkbeeldige tijd alsof alles handmatig was gedaan. Bij een vaste prijs betaal je voor de afgesproken prestatie. We geven geen vast besparingspercentage als garantie."
+    },
+    {
+      "id": "faq-14",
+      "q": "Kunnen tarieven veranderen?",
+      "a": "Ja, volgens de afgesproken indexatie- en wijzigingsregeling. Een wijziging wordt vooraf aangekondigd en geldt niet met terugwerkende kracht. Bij een nadelige wijziging kun je opzeggen tegen de ingangsdatum. Een overeengekomen vaste projectprijs verandert niet door jaarlijkse indexatie van beheer."
+    },
+    {
+      "id": "faq-15",
+      "q": "Is Uitgebreid beheer altijd de beste keuze?",
+      "a": "Nee. Als je weinig wijzigingswerk hebt, kan Techbeheer of zelfbeheer beter passen. Heb je hoge continuïteitseisen of complexe processen, dan is €950 ook niet automatisch voldoende. We beoordelen wat jouw proces nodig heeft."
+    },
+    {
+      "id": "faq-16",
+      "q": "Welke voorwaarden gelden?",
+      "a": "Voor opdrachten gelden de Algemene Voorwaarden B2B. Voor onderhoud gelden daarnaast de Aanvullende onderhoudsvoorwaarden. De offerte bevat je concrete scope, tarieven en afwijkingen. Als we als verwerker persoonsgegevens verwerken, sluiten we ook een verwerkersovereenkomst. Je krijgt de toepasselijke documenten vóór je akkoord kunt geven in een vorm die je kunt bewaren."
+    }
+  ]
+}

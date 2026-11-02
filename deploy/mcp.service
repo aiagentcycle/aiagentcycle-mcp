@@ -1,0 +1,43 @@
+[Unit]
+Description=AAC MCP server (read-only, Streamable HTTP op 127.0.0.1:8321)
+After=network.target
+
+[Service]
+User=mcp
+Group=mcp
+WorkingDirectory=/opt/aac-mcp/app
+Environment=PYTHONDONTWRITEBYTECODE=1
+Environment=HOME=/tmp
+Environment=AAC_MCP_CONTENT=/srv/mcp-content
+Environment=AAC_MCP_LOG=/var/log/mcp/toolcalls.jsonl
+Environment=AAC_MCP_ORIGIN_CHECK=1
+Environment=AAC_MCP_HOST=127.0.0.1
+Environment=AAC_MCP_PORT=8321
+ExecStart=/opt/aac-mcp/app/.venv/bin/python -m aac_mcp --host 127.0.0.1 --port 8321
+Restart=on-failure
+RestartSec=5
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+PrivateDevices=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectControlGroups=yes
+RestrictNamespaces=yes
+LockPersonality=yes
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+SystemCallArchitectures=native
+SystemCallFilter=@system-service
+CapabilityBoundingSet=
+UMask=0077
+ReadOnlyPaths=/srv/mcp-content
+ReadWritePaths=/var/log/mcp
+IPAddressDeny=any
+IPAddressAllow=localhost
+CPUQuota=50%
+MemoryMax=512M
+TasksMax=64
+
+[Install]
+WantedBy=multi-user.target
