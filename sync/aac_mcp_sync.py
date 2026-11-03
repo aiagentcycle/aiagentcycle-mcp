@@ -11,6 +11,7 @@ import html
 import json
 import os
 import re
+import shutil
 import sys
 import time
 import urllib.error
@@ -39,6 +40,10 @@ KINDS = (
 SKIP_SLUGS = frozenset({"newsletter-confirm", "nieuwsbrief-bevestigen", "afspraak-bevestigd", "booked", "gepland"})
 # Verdwijnt in één keer meer dan dit deel van de kennisbank, dan is de site waarschijnlijk half kapot.
 MAX_DROP = 0.4
+# Bij 20 of meer items: niet meer dan dit deel mag (bijna) zonder tekst zijn, en de totale tekst mag niet
+# meer dan dit deel krimpen ten opzichte van een bestaande kennisbank van 20 of meer bestanden.
+MAX_THIN = 0.3
+MAX_SHRINK = 0.5
 FAQ_PAGES = {"nl": "https://aiagentcycle.com/nl/prijzen/", "en": "https://aiagentcycle.com/en/pricing/"}
 FAQ_MIN_ITEMS = 5
 
@@ -201,6 +206,32 @@ def keep(item: dict) -> dict:
     return {key: item.get(key) for key in ALLOW}
 
 
+MODIFIED = re.compile(r"[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}")
+
+
+def check_fields(item: dict) -> None:
+    """id, modified en link komen letterlijk in de YAML-kop: alleen de vorm die WordPress levert mag erdoor."""
+    raw_id = item.get("id")
+    if isinstance(raw_id, str) and re.fullmatch(r"[0-9]{1,9}", raw_id):
+        raw_id = int(raw_id)
+    if not isinstance(raw_id, int) or isinstance(raw_id, bool) or not 1 <= raw_id <= 999_999_999:
+        raise FailClosed("id")
+    item["id"] = raw_id
+    modified = item.get("modified")
+    if not isinstance(modified, str) or not MODIFIED.fullmatch(modified):
+        raise FailClosed("modified")
+    link = item.get("link")
+    if not isinstance(link, str) or not link.isprintable():
+        raise FailClosed("link")
+    try:
+        parsed = urlparse(link)
+        host = parsed.hostname
+    except ValueError as exc:
+        raise FailClosed("link") from exc
+    if parsed.scheme != "https" or host != HOST:
+        raise FailClosed("link")
+
+
 def lang_of(link: str) -> str:
     path = urlparse(link or "").path
     if path.startswith("/en/") or path == "/en":
@@ -215,19 +246,26 @@ def type_of(base_type: str, link: str) -> str:
     return base_type
 
 
+def item_text(item: dict) -> str:
+    """De leestekst zoals to_markdown die onder de kop zet."""
+    return html_to_text(rendered(item.get("content"))) or html_to_text(rendered(item.get("excerpt")))
+
+
 def to_markdown(item: dict) -> str:
     title = html_to_text(rendered(item.get("title"))).replace("\n", " ") or str(item.get("slug") or "")
     body = html_to_text(rendered(item.get("content")))
     excerpt = html_to_text(rendered(item.get("excerpt")))
     text = body or excerpt
     summary = one_line(excerpt or body)
-    link = str(item.get("link") or "")
+    # Elk kopveld blijft op één regel, ook als een aanroeper buiten collect() om ongecontroleerde waarden geeft.
+    flat = lambda value: " ".join(str(value).split())  # noqa: E731
+    link = flat(item.get("link") or "")
     return (
         "---\n"
-        f"id: {item.get('id')}\n"
-        f"slug: {item.get('slug')}\n"
-        f"type: {item.get('type') or 'page'}\n"
-        f"modified: {item.get('modified')}\n"
+        f"id: {flat(item.get('id'))}\n"
+        f"slug: {flat(item.get('slug'))}\n"
+        f"type: {flat(item.get('type') or 'page')}\n"
+        f"modified: {flat(item.get('modified'))}\n"
         f"link: {link}\n"
         f"lang: {lang_of(link)}\n"
         f"title: {one_line(title, 200)}\n"
@@ -270,6 +308,7 @@ def collect(fetch, *, check_content_type: bool = True, now=time.monotonic, kinds
                 item = keep(raw)
                 if not slug_ok(str(item.get("slug") or "")):
                     raise FailClosed("slug")
+                check_fields(item)
                 if item["slug"] in SKIP_SLUGS:
                     continue
                 item["type"] = type_of(base_type, str(item.get("link") or ""))
@@ -312,40 +351,82 @@ def fill_thin(items: list[dict], fetch=fetch_url) -> int:
     return filled
 
 
-def publish(root: Path, items: list[dict], log_file: Path) -> str:
-    stamp = time.strftime("%Y%m%dT%H%M%SZ", time.gmtime())
-    staging = root / f".staging-{stamp}"
-    if staging.exists():
-        raise FailClosed("staging bestaat")
+KEEP_KB_DIRS = 2  # de actieve en de vorige kennisbank blijven staan
+
+
+def swap_kb(root: Path, staging: Path) -> None:
+    """Zet ``kb`` in één rename om naar ``staging`` (een symlink), zodat geen request een lege of halve kennisbank ziet.
+
+    Was ``kb`` nog een echte map (eerste run na de overgang), dan wordt die eerst opzij gezet: dat is de enige keer
+    dat er een kort moment zonder ``kb`` is. Oude ``kb-*``-mappen en resten van vroeger (``.prev``, ``.staging-*``)
+    worden daarna opgeruimd; de vorige kennisbank blijft staan om terug te kunnen.
+    """
+    kb = root / "kb"
+    previous = os.readlink(kb) if kb.is_symlink() else None
+    if kb.is_dir() and not kb.is_symlink():
+        previous = f"{staging.name}-oud"
+        kb.rename(root / previous)
+    link_tmp = root / f".{staging.name}.link"
+    if link_tmp.is_symlink() or link_tmp.exists():
+        link_tmp.unlink()
+    link_tmp.symlink_to(staging.name)
+    os.replace(link_tmp, kb)
+    keep = {staging.name, Path(previous).name if previous else ""}
+    for leftover in root.iterdir():
+        if leftover.name in keep or leftover.name == "kb" or leftover.is_symlink():
+            continue
+        if leftover.is_dir() and (leftover.name.startswith("kb-") or leftover.name == ".prev" or leftover.name.startswith(".staging-")):
+            shutil.rmtree(leftover, ignore_errors=True)
+
+
+def publish(root: Path, items: list[dict], log_file: Path, *, stamp: str | None = None) -> str:
+    base = stamp or time.strftime("%Y%m%dT%H%M%SZ", time.gmtime())
+    stamp, n = base, 1
+    while (root / f"kb-{stamp}").exists():
+        # Twee runs binnen één seconde (tests) of een rest van een afgebroken run: unieke naam, geen weigering.
+        n += 1
+        stamp = f"{base}-{n}"
+    staging = root / f"kb-{stamp}"
     kb = root / "kb"
     old = {path.name for path in kb.glob("*.md")} if kb.is_dir() else set()
     names = [f"{item.get('id')}-{item.get('slug')}.md" for item in items]
     if len(old) >= 20 and len(set(names)) < len(old) * (1 - MAX_DROP):
         raise FailClosed(f"te veel verdwenen: {len(old)} -> {len(set(names))}")
-    staging.mkdir(parents=True)
-    total = 0
-    for name, item in zip(names, items):
-        text = to_markdown(item)
-        total += len(text.encode("utf-8"))
-        (staging / name).write_text(text, encoding="utf-8")
+    texts = [to_markdown(item) for item in items]
+    total = sum(len(text.encode("utf-8")) for text in texts)
+    if len(items) >= 20:
+        # Een site die wel antwoordt maar lege pagina's geeft (onderhoud, kapotte template) mag de kennisbank niet leegmaken.
+        thin = sum(1 for item in items if len(item_text(item)) < THIN_CHARS)
+        if thin > len(items) * MAX_THIN:
+            raise FailClosed(f"te veel lege items: {thin} van {len(items)}")
+    if len(old) >= 20:
+        old_total = 0
+        for path in kb.glob("*.md"):
+            try:
+                old_total += path.stat().st_size
+            except OSError:
+                continue
+        if total < old_total * (1 - MAX_SHRINK):
+            raise FailClosed(f"te veel tekst verdwenen: {old_total} -> {total} bytes")
     if not names or total <= 0:
         raise FailClosed("staging leeg")
-    prev = root / ".prev"
+    staging.mkdir(parents=True)
     changed = 0
-    if kb.is_dir():
-        # Alleen echte inhoudswijzigingen tellen, niet elk bestand dat er al was.
-        for name in set(names) & old:
-            try:
-                if (staging / name).read_bytes() != (kb / name).read_bytes():
+    try:
+        for name, text in zip(names, texts):
+            (staging / name).write_text(text, encoding="utf-8")
+        if kb.is_dir():
+            # Alleen echte inhoudswijzigingen tellen, niet elk bestand dat er al was.
+            for name in set(names) & old:
+                try:
+                    if (staging / name).read_bytes() != (kb / name).read_bytes():
+                        changed += 1
+                except OSError:
                     changed += 1
-            except OSError:
-                changed += 1
-        if prev.exists():
-            import shutil
-
-            shutil.rmtree(prev)
-        kb.rename(prev)
-    staging.rename(kb)
+    except OSError:
+        shutil.rmtree(staging, ignore_errors=True)
+        raise FailClosed("schrijven mislukt")
+    swap_kb(root, staging)
     new = set(names)
     by_type: dict[str, int] = {}
     for item in items:
@@ -382,9 +463,19 @@ def faq_items(page_html: str) -> list[dict]:
             types = node.get("@type")
             if "FAQPage" not in (types if isinstance(types, list) else [types]):
                 continue
-            for entry in node.get("mainEntity", []):
-                q = " ".join(html.unescape(ZW.sub("", entry.get("name", ""))).split())
-                a = html.unescape(re.sub(r"<[^>]+>", " ", ZW.sub("", (entry.get("acceptedAnswer") or {}).get("text", ""))))
+            entries = node.get("mainEntity")
+            if not isinstance(entries, list):
+                continue
+            for entry in entries:
+                if not isinstance(entry, dict):
+                    continue
+                answer = entry.get("acceptedAnswer")
+                name = entry.get("name")
+                text = answer.get("text") if isinstance(answer, dict) else None
+                if not isinstance(name, str) or not isinstance(text, str):
+                    continue
+                q = " ".join(html.unescape(ZW.sub("", name)).split())
+                a = html.unescape(re.sub(r"<[^>]+>", " ", ZW.sub("", text)))
                 a = " ".join(a.split())
                 if q and a:
                     items.append({"id": f"faq-{len(items) + 1}", "q": q, "a": a})

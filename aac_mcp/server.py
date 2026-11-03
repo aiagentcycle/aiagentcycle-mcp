@@ -1,9 +1,10 @@
-"""Nine read-only tools plus agent-readable files. Descriptions stay in this file. No shell, no URL arguments."""
+"""Ten read-only tools plus agent-readable files. Descriptions stay in this file. No shell, no URL arguments."""
 
 from __future__ import annotations
 
 import json
 import os
+import re
 import time
 from datetime import datetime, timezone
 from pathlib import Path
@@ -122,7 +123,12 @@ def _type_error(type_) -> str | None:
 
 def _priced(index: kbindex.Index, data: dict, item: dict) -> dict:
     item = dict(item)
-    item["price_verified"] = verified(index, data.get("verify_page_id"), item.pop("verify", []))
+    strings = item.pop("verify", [])
+    item["price_verified"] = verified(index, data.get("verify_page_id"), strings)
+    price = str(item.get("price") or "")
+    if not strings and ("€" in price or re.search(r"[0-9]", price)):
+        # Een bedrag zonder controletekst is niet geverifieerd, niet "niets te controleren".
+        item["price_verified"] = False
     return item
 
 
@@ -455,7 +461,7 @@ def doc_routes():
 
     async def markdown_doc(request):
         name = request.path_params["name"]
-        if not name.endswith(".md") or not name[:-3].isdigit():
+        if not re.fullmatch(r"[0-9]{1,9}\.md", name):
             return PlainTextResponse("not found", status_code=404)
         doc_id = int(name[:-3])
         if kbindex.load(content_root()).docs.get(doc_id) is None:

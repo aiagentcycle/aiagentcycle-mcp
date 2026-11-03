@@ -1,4 +1,4 @@
-"""Origin guard. A missing Origin is allowed. Any other value must be on the list.
+"""Origin guard for /mcp. A missing Origin is allowed. Any other value must be on the list.
 
 Pure ASGI middleware so Streamable HTTP keeps its response stream. Mount it with
 ``starlette.middleware.Middleware`` inside ``FastMCP.http_app`` so the FastMCP
@@ -28,7 +28,8 @@ class OriginGuard:
         self.enabled = enabled
 
     async def __call__(self, scope, receive, send):
-        if scope.get("type") != "http":
+        # Alleen het MCP-eindpunt zelf. Server Card, llms.txt, /md/ en iconen zijn openbaar (CORS *).
+        if scope.get("type") != "http" or scope.get("path") != "/mcp":
             await self.app(scope, receive, send)
             return
         origin = None

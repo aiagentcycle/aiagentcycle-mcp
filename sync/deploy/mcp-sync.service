@@ -4,6 +4,7 @@ Description=AAC MCP content sync
 
 [Service]
 Type=oneshot
+TimeoutStartSec=10min
 User=mcp-sync
 Group=mcp
 Environment=PYTHONDONTWRITEBYTECODE=1

@@ -149,13 +149,99 @@ def test_catalog_parses_cards_and_checks_count(tmp_path: Path):
         s.CATALOG_MIN = old
 
 
+def _many(count, text="x" * 250):
+    return [{"id": n, "slug": f"p{n}", "type": "page", "link": f"https://aiagentcycle.com/nl/p{n}/",
+             "title": {"rendered": "T"}, "content": {"rendered": f"<p>{text}</p>"}, "excerpt": {"rendered": ""},
+             "modified": "2026-10-20T00:00:00"} for n in range(1, count + 1)]
+
+
 def test_publish_refuses_mass_removal(tmp_path: Path):
-    many = [{"id": n, "slug": f"p{n}", "type": "page", "link": f"https://aiagentcycle.com/nl/p{n}/",
-             "title": {"rendered": "T"}, "content": {"rendered": "x"}, "excerpt": {"rendered": ""}, "modified": ""} for n in range(30)]
+    many = _many(30)
     publish(tmp_path, many, tmp_path / "r.txt")
     with pytest.raises(FailClosed, match="te veel verdwenen"):
         publish(tmp_path, many[:10], tmp_path / "r.txt")
     assert len(list((tmp_path / "kb").glob("*.md"))) == 30
+
+
+def test_publish_refuses_empty_pages_and_shrunken_text(tmp_path: Path):
+    items = _many(25)
+    for item in items[:10]:
+        item["content"] = {"rendered": ""}
+    with pytest.raises(FailClosed, match="te veel lege items"):
+        publish(tmp_path, items, tmp_path / "r.txt")
+    assert not (tmp_path / "kb").exists()
+    # 7 van 25 dun (28%) mag nog.
+    for item in items[7:10]:
+        item["content"] = {"rendered": "<p>" + "y" * 250 + "</p>"}
+    publish(tmp_path, items, tmp_path / "r.txt")
+
+    big = tmp_path / "groot"
+    big.mkdir()
+    publish(big, _many(20, "z" * 2000), big / "r.txt")
+    with pytest.raises(FailClosed, match="te veel tekst verdwenen"):
+        publish(big, _many(20, "z" * 300), big / "r.txt")
+    assert "z" * 2000 in (big / "kb" / "1-p1.md").read_text(encoding="utf-8")
+    assert not list(big.glob(".staging-*"))
+
+
+def test_publish_swaps_kb_atomically_and_keeps_previous(tmp_path: Path):
+    import os
+
+    many = _many(25)
+    publish(tmp_path, many, tmp_path / "r.txt", stamp="1")
+    assert (tmp_path / "kb").is_symlink() and os.readlink(tmp_path / "kb") == "kb-1"
+    (tmp_path / ".prev").mkdir()
+    (tmp_path / ".staging-x").mkdir()
+    many[0]["content"] = {"rendered": "<p>" + "w" * 250 + "</p>"}
+    report = publish(tmp_path, many, tmp_path / "r.txt", stamp="2")
+    assert "changed 1" in report and os.readlink(tmp_path / "kb") == "kb-2"
+    assert "w" * 250 in (tmp_path / "kb" / "1-p1.md").read_text(encoding="utf-8")
+    dirs = lambda root: sorted(p.name for p in root.iterdir() if p.is_dir() and not p.is_symlink())  # noqa: E731
+    assert dirs(tmp_path) == ["kb-1", "kb-2"]
+    publish(tmp_path, many, tmp_path / "r.txt", stamp="3")
+    assert dirs(tmp_path) == ["kb-2", "kb-3"]
+    # Een echte kb-map uit de oude opzet wordt bij de eerste run opzij gezet en daarna opgeruimd.
+    legacy = tmp_path / "oud"
+    (legacy / "kb").mkdir(parents=True)
+    for item in many:
+        (legacy / "kb" / f"{item['id']}-{item['slug']}.md").write_text("x", encoding="utf-8")
+    publish(legacy, many, legacy / "r.txt", stamp="1")
+    assert (legacy / "kb").is_symlink() and dirs(legacy) == ["kb-1", "kb-1-oud"]
+    publish(legacy, many, legacy / "r.txt", stamp="2")
+    assert dirs(legacy) == ["kb-1", "kb-2"]
+
+
+def _one_kind(item):
+    def fetch(url: str):
+        if "/posts?" in url and "page=1&" in url:
+            return _page([item])
+        return _page([])
+
+    return fetch
+
+
+def test_collect_validates_id_modified_and_link():
+    good = _item("12", "audit", "https://aiagentcycle.com/nl/kennisbank/audit/")
+    assert collect(_one_kind(good))[0]["id"] == 12
+    bad = [
+        ({"id": "../evil"}, "id"), ({"id": 0}, "id"), ({"id": 1_000_000_000}, "id"), ({"id": True}, "id"), ({"id": "１２"}, "id"),
+        ({"modified": "x\nlink: https://evil/"}, "modified"), ({"modified": "2026-10-20T00:00:00\n"}, "modified"),
+        ({"modified": None}, "modified"),
+        ({"link": "https://evil.example/p/"}, "link"), ({"link": "http://aiagentcycle.com/p/"}, "link"),
+        ({"link": "https://aiagentcycle.com/p/\ntype: x"}, "link"), ({"link": "https://aiagentcycle.com.evil.example/p/"}, "link"),
+        ({"link": None}, "link"),
+    ]
+    for change, field in bad:
+        with pytest.raises(FailClosed, match=field):
+            collect(_one_kind({**good, **change}))
+
+
+def test_faq_skips_malformed_entries():
+    valid = {"@type": "Question", "name": "Vraag?", "acceptedAnswer": {"@type": "Answer", "text": "Antwoord"}}
+    odd = [{"@type": "FAQPage", "mainEntity": ["tekst", valid, {"name": 5}, {"name": "Q", "acceptedAnswer": ["x"]}]},
+           {"@type": "FAQPage", "mainEntity": "geen lijst"}]
+    page = '<script type="application/ld+json">' + json.dumps({"@graph": odd}) + "</script>"
+    assert faq_items(page) == [{"id": "faq-1", "q": "Vraag?", "a": "Antwoord"}]
 
 
 def test_faq_from_json_ld_and_keeps_old_on_failure(tmp_path: Path):

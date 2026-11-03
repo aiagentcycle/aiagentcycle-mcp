@@ -52,12 +52,6 @@ class Index:
         found = [d for d in self.docs.values() if (lang is None or d.lang == lang) and (type_ is None or d.type == type_)]
         return sorted(found, key=lambda d: (TYPES.index(d.type) if d.type in TYPES else 99, d.title.casefold()))
 
-    def find_link(self, link: str) -> Doc | None:
-        for doc in self.docs.values():
-            if doc.link == link:
-                return doc
-        return None
-
     def newest(self) -> str:
         return max((d.modified for d in self.docs.values()), default="")
 

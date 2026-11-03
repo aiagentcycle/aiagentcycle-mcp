@@ -5,19 +5,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-MAX_BYTES = 50 * 1024
-TRUNC_MARKER = "\n[AFGEKAPT: resultaat groter dan 51200 bytes]"
 INTERNAL_KEYS = {"internal", "internal_notes", "cost", "margin", "owner_only"}
-
-
-def cap_text(text: str, *, limit: int = MAX_BYTES) -> str:
-    raw = text.encode("utf-8")
-    if len(raw) <= limit:
-        return text
-    marker = TRUNC_MARKER.encode("utf-8")
-    budget = max(0, limit - len(marker))
-    cut = raw[:budget].decode("utf-8", errors="ignore")
-    return cut + TRUNC_MARKER
 
 
 def load_json(root: Path, name: str) -> dict:

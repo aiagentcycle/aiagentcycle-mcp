@@ -2,8 +2,8 @@ import asyncio
 import json
 from pathlib import Path
 
-from aac_mcp.content import MAX_BYTES, cap_text, kb_files
-from aac_mcp.jsonlog import args_hash
+from aac_mcp.content import kb_files
+from aac_mcp.jsonlog import args_hash, write_call
 from aac_mcp.origin import origin_allowed
 
 FRONT = (
@@ -255,13 +255,29 @@ def test_index_follows_kb_swap(tmp_path: Path):
     assert _data(_call(tmp_path, "list_documents", {"lang": "nl"}))["count"] == 1
 
 
-def test_cap_on_and_off():
-    big = "x" * (MAX_BYTES + 1000)
-    capped = cap_text(big)
-    assert "AFGEKAPT" in capped
-    assert len(capped.encode("utf-8")) <= MAX_BYTES
-    open_limit = cap_text(big, limit=MAX_BYTES + 5000)
-    assert "AFGEKAPT" not in open_limit
+def test_log_failure_does_not_break_call_and_caps_user_agent(tmp_path: Path, capsys):
+    blocker = tmp_path / "geen-map"
+    blocker.write_text("bestand, geen map", encoding="utf-8")
+    write_call(blocker / "toolcalls.jsonl", tool="get_faq", args={}, status="ok", duration_ms=1, nbytes=1,
+               user_agent="x", mcp_name="")
+    assert "toolcall log failed" in capsys.readouterr().err
+    log = tmp_path / "toolcalls.jsonl"
+    write_call(log, tool="get_faq", args={}, status="ok", duration_ms=1, nbytes=1, user_agent="u" * 500, mcp_name="")
+    assert json.loads(log.read_text(encoding="utf-8"))["user_agent"] == "u" * 120
+
+
+def test_price_without_verify_text_is_not_verified(tmp_path: Path):
+    _tree(tmp_path)
+    data = json.loads((tmp_path / "services.json").read_text(encoding="utf-8"))
+    data["services"].append({"id": "workshop", "name": "Workshop", "price": "€ 250", "verify": []})
+    data["services"].append({"id": "gesprek", "name": "Gesprek", "verify": []})
+    (tmp_path / "services.json").write_text(json.dumps(data), encoding="utf-8")
+    listed = _data(_call(tmp_path, "list_services"))
+    by_id = {s["id"]: s for s in listed["services"]}
+    assert by_id["workshop"]["price_verified"] is False
+    assert by_id["gesprek"]["price_verified"] is None and by_id["training"]["price_verified"] is None
+    assert listed["all_prices_verified"] is False and "warning" in listed
+    assert _data(_call(tmp_path, "get_service", {"service_id": "workshop"}))["price_verified"] is False
 
 
 def test_realpath_skips_outside(tmp_path: Path):
@@ -290,6 +306,13 @@ def test_http_routes_discovery_and_origin(tmp_path: Path):
 
     with TestClient(create_app(), follow_redirects=False) as client:
         assert client.post("/mcp", headers={"Origin": "https://evil.example"}, json={"jsonrpc": "2.0", "id": 1, "method": "initialize"}).status_code == 403
+        assert client.post("/mcp/", headers={"Origin": "https://evil.example"}, json={"jsonrpc": "2.0", "id": 1, "method": "initialize"}).status_code != 200
+        # De guard geldt alleen voor /mcp: de openbare bestanden blijven bereikbaar vanuit elke browser.
+        foreign = {"Origin": "https://example.org"}
+        assert client.get("/llms.txt", headers=foreign).status_code == 200
+        served = client.get("/mcp/server-card", headers=foreign)
+        assert served.status_code == 200 and served.headers["access-control-allow-origin"] == "*"
+        assert client.get("/md/907.md", headers=foreign).status_code == 200
         init = client.post(
             "/mcp",
             headers={"Accept": "application/json, text/event-stream", "Content-Type": "application/json"},
@@ -310,6 +333,7 @@ def test_http_routes_discovery_and_origin(tmp_path: Path):
         md = client.get("/md/907.md")
         assert md.status_code == 200 and md.text.startswith("# AFAS Profit koppelen") and "Source: https://aiagentcycle.com/nl/afas/" in md.text
         assert client.get("/md/999.md").status_code == 404 and client.get("/md/..%2Fprofile.nl.json").status_code == 404
+        assert client.get("/md/%C2%B2.md").status_code == 404 and client.get("/md/1234567890.md").status_code == 404
         assert client.get("/").status_code == 302
         assert "llms.txt" in client.get("/robots.txt").text
         health = client.get("/healthz").json()
