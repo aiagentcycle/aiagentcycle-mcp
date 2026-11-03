@@ -1,6 +1,8 @@
 # AIAgentCycle MCP server
 
 [![mcptry](https://mcptry.com/badge/com.aiagentcycle/aiagentcycle)](https://mcptry.com/servers/com.aiagentcycle/aiagentcycle)
+[![Listed on clauderules.net](https://clauderules.net/api/badge/aiagentcycle-y8dg)](https://clauderules.net/mcp/aiagentcycle-y8dg)
+[![Listed on HookMCP](https://hookmcp.com/badge.svg)](https://hookmcp.com)
 
 Read-only [Model Context Protocol](https://modelcontextprotocol.io) server for [aiagentcycle.com](https://aiagentcycle.com), a Dutch company that builds workflow automation, system integrations and AI agents on self-hosted n8n for small and medium-sized businesses.
 
